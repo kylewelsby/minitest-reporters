@@ -1,13 +1,13 @@
 module Minitest
   module Reporters
-    class GithubReporter < BaseReporter
+    class GithubReporter < DefaultReporter
       def record(test)
         super
         return unless test.error? || test.skipped? || test.failure
 
         type = determine_type(test)
         output = create_output(test)
-        message = test.failure
+        message = "#{test.failure}\n#{message_for(test)}"
 
         puts "#{type} #{output.join(',')}::#{message}"
       end
@@ -23,9 +23,13 @@ module Minitest
       end
 
       def create_output(test)
+        loc = location(test.failure)
+        if test.skipped?
+          loc = test.source_location
+        end
         {
-          file: relative_path(test.source_location[0]),
-          line: test.source_location[1],
+          file: relative_path(loc[0]),
+          line: loc[1],
           title: test.name,
         }.map { |k, v| "#{k}=#{escape_properties(v)}" }
       end
@@ -40,6 +44,18 @@ module Minitest
               .gsub("\n", '%0A')
               .gsub(":", '%3A')
               .gsub(",", '%2C')
+      end
+
+      def location(exception)
+        last_before_assertion = ''
+        exception.backtrace.reverse_each do |s|
+          break if s =~ /in .(assert|refute|flunk|pass|fail|raise|must|wont)/
+
+          last_before_assertion = s
+        end
+
+        out = last_before_assertion.sub(/:in .*$/, '')
+        out.split(":")
       end
     end
   end
