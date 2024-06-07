@@ -7,7 +7,12 @@ module Minitest
 
         type = determine_type(test)
         output = create_output(test)
-        message = "#{test.failure}\n#{message_for(test)}"
+        message = "#{test.failure}\n"
+        if test.failure
+          message << "\n"
+          message << test.failure.backtrace.join("\n")
+          message << "\n\n\n"
+        end
 
         puts "#{type} #{output.join(',')}::#{message}"
       end
