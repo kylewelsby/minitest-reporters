@@ -1,6 +1,6 @@
 module Minitest
   module Reporters
-    class GithubReporter < DefaultReporter
+    class GithubReporter < BaseReporter
       def record(test)
         super
         return unless test.error? || test.skipped? || test.failure
