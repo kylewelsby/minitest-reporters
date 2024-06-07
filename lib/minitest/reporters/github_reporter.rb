@@ -13,7 +13,7 @@ module Minitest
           message << test.failure.backtrace[0]
         end
 
-        puts "\n#{type} #{output.join(',')}::#{message}"
+        puts "#{type} #{output.join(',')}::#{message}\n"
       end
 
       private
