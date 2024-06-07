@@ -6,6 +6,9 @@ module MinitestReportersTest
       fixtures_directory = File.expand_path('../../fixtures', __dir__)
       test_filename = File.join(fixtures_directory, 'github_test.rb')
       output = `#{ruby_executable} #{test_filename} 2>&1`
+      puts "begin output"
+      puts output
+      puts "end output"
       assert_match "::error file=test/fixtures/sample_test.rb,line=11,title=test_error::Unexpected exception", output
       assert_match "::error file=test/fixtures/sample_test.rb,line=5,title=test_failure::Expected false to be truthy.", output
       assert_match "::notice file=test/fixtures/sample_test.rb,line=8,title=test_skip::Skipping rope", output

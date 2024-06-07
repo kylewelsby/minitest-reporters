@@ -3,6 +3,7 @@ module Minitest
     class GithubReporter < BaseReporter
       def record(test)
         super
+        return unless test.error? || test.skipped? || test.failure
 
         type = determine_type(test)
         output = create_output(test)
@@ -16,7 +17,7 @@ module Minitest
       def determine_type(test)
         if test.skipped?
           "::notice"
-        elsif test.error? || test.failure
+        else
           "::error"
         end
       end
